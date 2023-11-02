@@ -5,7 +5,7 @@ import (
 	"github.com/RafaelKamada/fc-ms-wallet/internal/gateway"
 )
 
-type CreateTransactionDTO struct {
+type CreateTransactionInputDTO struct {
 	AccountIDFrom string
 	AccountIDTo   string
 	Amount        float64
@@ -27,7 +27,7 @@ func NewCreateTransactionUseCase(transactionGateway gateway.TransactionGateway, 
 	}
 }
 
-func (uc *CreateTransactionUseCase) Execute(input CreateTransactionDTO) (*CreateTransactionOutputDTO, error) {
+func (uc *CreateTransactionUseCase) Execute(input CreateTransactionInputDTO) (*CreateTransactionOutputDTO, error) {
 	accountFrom, err := uc.AccountGateway.FindByID(input.AccountIDFrom)
 	if err != nil {
 		return nil, err
