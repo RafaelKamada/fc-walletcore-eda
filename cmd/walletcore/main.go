@@ -9,6 +9,8 @@ import (
 	"github.com/RafaelKamada/fc-ms-wallet/internal/usecase/create_account"
 	"github.com/RafaelKamada/fc-ms-wallet/internal/usecase/create_client"
 	"github.com/RafaelKamada/fc-ms-wallet/internal/usecase/create_transaction"
+	"github.com/RafaelKamada/fc-ms-wallet/internal/web"
+	"github.com/RafaelKamada/fc-ms-wallet/internal/web/webserver"
 	"github.com/RafaelKamada/fc-ms-wallet/pkg/events"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -32,4 +34,15 @@ func main() {
 	createAccountUseCase := create_account.NewCreateAccountUseCase(accountDB, clientDb)
 	createTransactionUseCase := create_transaction.NewCreateTransactionUseCase(transactionDB, accountDB, eventDispatcher, transactionCreateEvent)
 
+	webserver := webserver.NewWebServer(":3000")
+
+	clientHandler := web.NewWebClientHandler(*createClientUseCase)
+	accountHandler := web.NewWebAccountHandler(*createAccountUseCase)
+	transactionHandler := web.NewWebTransactionHandler(*createTransactionUseCase)
+
+	webserver.AddHandler("/clients", clientHandler.CreateClient)
+	webserver.AddHandler("/accounts", accountHandler.CreateAccount)
+	webserver.AddHandler("/transactions", transactionHandler.CreateTransaction)
+
+	webserver.Start()
 }
