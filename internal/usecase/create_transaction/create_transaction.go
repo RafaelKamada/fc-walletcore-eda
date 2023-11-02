@@ -19,7 +19,7 @@ type CreateTransactionOutputDTO struct {
 type CreateTransactionUseCase struct {
 	TransactionGateway gateway.TransactionGateway
 	AccountGateway     gateway.AccountGateway
-	EventDipatcher     events.EventDispatcherInterface
+	EventDispatcher    events.EventDispatcherInterface
 	TransactionCreated events.EventInterface
 }
 
@@ -32,7 +32,7 @@ func NewCreateTransactionUseCase(
 	return &CreateTransactionUseCase{
 		TransactionGateway: transactionGateway,
 		AccountGateway:     accountGateway,
-		EventDipatcher:     eventDipatcher,
+		EventDispatcher:    eventDipatcher,
 		TransactionCreated: transactionCreated,
 	}
 }
@@ -59,7 +59,7 @@ func (uc *CreateTransactionUseCase) Execute(input CreateTransactionInputDTO) (*C
 	}
 
 	uc.TransactionCreated.SetPayload(output)
-	uc.EventDipatcher.Dispatch(uc.TransactionCreated)
+	uc.EventDispatcher.Dispatch(uc.TransactionCreated)
 
 	return output, nil
 }
